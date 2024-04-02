@@ -1,10 +1,9 @@
 <template>
   <q-item
     clickable
-    tag="a"
-    target="_blank"
-    :href="link"
-  >
+    :to="route"
+    exact
+    >
     <q-item-section
       v-if="icon"
       avatar
@@ -29,6 +28,7 @@ export interface EssentialLinkProps {
   caption?: string;
   link?: string;
   icon?: string;
+  route: { name: string; };
 };
 
 withDefaults(defineProps<EssentialLinkProps>(), {
