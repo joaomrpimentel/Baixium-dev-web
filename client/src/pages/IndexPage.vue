@@ -1,24 +1,32 @@
 <template>
-  <q-page padding>
-    <q-table
-      title="Treats"
-      :rows="posts"
-      :columns="columns"
-      row-key="id"
-    >
-
-        <template v-slot:body-cell-actions="props">
-        <q-td :props="props">
-                <q-btn
-                    align="center"
-                    icon="delete"
-                    @click="handleDelete(props.row.id)"
-                    color="negative"
-                />
-            </q-td>
-        </template>
-    </q-table>
-  </q-page>
+    <q-header class="bg-grey-1 text-black" style="padding: 10px">
+        <q-toolbar>
+          <q-toolbar-title>
+            <q-avatar square>
+              <img src="https://cdn.discordapp.com/attachments/1227583527114248253/1227583583183573082/Baixium-logo.svg.svg?ex=6628ef4d&is=66167a4d&hm=d7cf8913c78feb2f1516fc8eb245cbda1355ae6715e4712fd9f9e8822c98b3f9&">
+            </q-avatar>
+            Baixium
+          </q-toolbar-title>
+          <div style="width: 13%" class="row justify-between">
+            <div>
+                <q-btn flat dense label="Create Post" @click="navigateTo('contact')" />
+            </div>
+            <div>
+                <q-btn flat dense label="Profile" @click="navigateTo('about')" />
+            </div>
+            <div>
+                <q-btn flat dense label="Home" @click="navigateTo('home')" />
+            </div>
+          </div>
+        </q-toolbar>
+    </q-header>
+    <q-footer bordered class="bg-grey-1 text-primary">
+    <q-tabs no-caps active-color="primary" indicator-color="transparent" class="text-grey-8" v-model="tab">
+        <q-tab name="About Us" label="About Us" />
+        <q-tab name="Contact" label="Contact" />
+        <q-tab name="Terms & Conditions" label="Terms & Conditions" />
+    </q-tabs>
+    </q-footer>
 </template>
 
 <script>
@@ -30,7 +38,7 @@ export default defineComponent({
     name: 'IndexPage',
     setup () {
         const posts = ref([]);
-        const { list, post, update, remove } = postsService();
+        const { list, remove } = postsService();
         const columns = [
             { name: 'id', field: 'id', label: 'id' },
             { name: 'author', field: 'author', label: 'author' },
