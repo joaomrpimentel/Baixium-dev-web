@@ -9,7 +9,7 @@
           </q-toolbar-title>
           <div style="width: 13%" class="row justify-between">
             <div>
-                <q-btn flat dense label="Create Post" @click="navigateTo('contact')" />
+                <q-btn flat dense label="Create Post" @click="navigateTo('contacts')" />
             </div>
             <div>
                 <q-btn flat dense label="Profile" @click="navigateTo('about')" />
@@ -20,6 +20,20 @@
           </div>
         </q-toolbar>
     </q-header>
+    <q-body>
+      <div style="display: flex; justify-content: center; align-items: center; height: 70vh; flex-direction: column;">
+        <div class="q-mt-sm">
+          <h3>Welcome to Baixium</h3>
+        </div>
+        <div class="q-mt-sm">
+            Share and explore knowledge with other students
+        </div>
+        <div class="q-mt-sm">
+            <q-btn flat dense label="Sing Up" @click="navigateTo('')" />
+            <q-btn flat dense label="Login" @click="navigateTo('login')" />
+        </div>
+      </div>
+    </q-body>
     <q-footer bordered class="bg-grey-1 text-primary">
     <q-tabs no-caps active-color="primary" indicator-color="transparent" class="text-grey-8" v-model="tab">
         <q-tab name="About Us" label="About Us" />
@@ -36,6 +50,11 @@ import { useQuasar } from 'quasar';
 
 export default defineComponent({
     name: 'IndexPage',
+    methods: {
+    navigateTo(routeName) {
+      this.$router.push({ name: routeName })
+    }
+    },
     setup () {
         const posts = ref([]);
         const { list, remove } = postsService();
