@@ -2,10 +2,12 @@
   <q-header class="bg-grey-1 text-black" style="padding: 10px">
       <q-toolbar>
         <q-toolbar-title>
-          <q-avatar square>
-            <img src="https://cdn.discordapp.com/attachments/1227583527114248253/1227583583183573082/Baixium-logo.svg.svg?ex=6628ef4d&is=66167a4d&hm=d7cf8913c78feb2f1516fc8eb245cbda1355ae6715e4712fd9f9e8822c98b3f9&">
-          </q-avatar>
-          Baixium
+          <div @click="navigateTo('home')" style="width: 100px; height: 50px;">
+            <q-avatar square>
+              <img src="https://cdn.discordapp.com/attachments/1227583527114248253/1227583583183573082/Baixium-logo.svg.svg?ex=6628ef4d&is=66167a4d&hm=d7cf8913c78feb2f1516fc8eb245cbda1355ae6715e4712fd9f9e8822c98b3f9&" @click="navigateTo('home')">
+            </q-avatar>
+            Baixium 
+          </div>
         </q-toolbar-title>
         <div style="width: 13%" class="row justify-between">
           <div>
@@ -20,6 +22,59 @@
         </div>
       </q-toolbar>
   </q-header>
+  <q-body>
+    <div class="q-mt-lg" style="display: flex; justify-content: center; align-items: center; height: 70vh; flex-direction: column;">
+      <q-layout view="lHh Lpr fff">
+        <q-page style="margin: 0px 250px" class="row items-center">
+          <div class="column q-pa-xm">
+            <div class="row">
+              <q-card square class="shadow-24" style="width:600px;height:350px;">
+                <q-card-section class="bg-black" style="height:60px;">
+                  <h4 class="text-h5 text-white q-my-md">Aqui vai algum texto. Ou não</h4>
+                </q-card-section>
+                <q-card-section>
+                  <q-fab color="primary" @click="switchTypeForm" icon="add" class="absolute" style="top: 0; right: 12px; transform: translateY(-50%);">
+                  <q-tooltip>
+                    Registration of a new user
+                  </q-tooltip>
+                  </q-fab>
+                  <q-form>
+                    <q-input ref="email" square v-model="email" type="email" lazy-rules :rules="[this.required,this.isEmail,this.short]" label="Email">
+                      <template v-slot:prepend>
+                        <q-icon name="email" />
+                      </template>
+                    </q-input>
+                    <q-input ref="password" square v-model="password" :type="passwordFieldType" lazy-rules :rules="[this.required,this.short]" label="Password">
+                      <template v-slot:prepend>
+                        <q-icon name="lock" />
+                      </template>
+                      <template v-slot:append>
+                        <q-icon :name="visibilityIcon" @click="switchVisibility" class="cursor-pointer" />
+                      </template>
+                    </q-input>
+                    <q-input ref="repassword" v-if="register" square v-model="repassword" :type="passwordFieldType" lazy-rules :rules="[this.required,this.short,this.diffPassword]" label="Repeat password">
+                      <template v-slot:prepend>
+                        <q-icon name="lock" />
+                      </template>
+                      <template v-slot:append>
+                        <q-icon :name="visibilityIcon" @click="switchVisibility" class="cursor-pointer" />
+                      </template>
+                    </q-input>
+                  </q-form>
+                </q-card-section>
+                <q-card-actions class="q-px-lg">
+                  <q-btn label="Login" unelevated size="lg" color="secondary" @click="submit" class="full-width text-white" />
+                </q-card-actions>
+                <q-card-section v-if="!register" class="text-center q-pa-sm">
+                  <p class="text-grey-6">Forgot Password?</p>
+                </q-card-section>
+              </q-card>
+            </div>
+          </div>
+        </q-page>
+      </q-layout>
+    </div>
+  </q-body>
   <q-footer bordered class="bg-grey-1 text-primary">
   <q-tabs no-caps active-color="primary" indicator-color="transparent" class="text-grey-8" v-model="tab">
       <q-tab name="About Us" label="About Us" />
@@ -37,11 +92,51 @@ import { useQuasar } from 'quasar';
 export default defineComponent({
   name: 'LoginPage',
   methods: {
+    required (val) {
+      return  (val && val.length > 0 || 'Field must be completed!')
+    },
+    diffPassword (val) {
+       const val2 = this.$refs.password.value
+       return (val && (val===val2) || 'Passwords do not match!')
+     },
+    short(val) {
+      return  (val && val.length > 3 || 'teste')
+    },
+    isEmail (val) {
+       const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/
+       return (emailPattern.test(val) || 'Enter a valid email')
+     },
+     submit () {
+       if (this.register){
+          this.$refs.email.validate()
+          this.$refs.username.validate()
+          this.$refs.password.validate()
+          this.$refs.repassword.validate()
+       } else {
+          this.$refs.email.validate()
+          this.$refs.password.validate()      
+       }
+      
+       if (!this.register) 
+         if (!this.$refs.email.hasError && (!this.$refs.password.hasError))
+     {
+       this.$q.notify({
+          icon: 'done',
+          color: 'positive',
+          message: 'Logged in'
+        })
+     }
+     },
+    switchVisibility() {
+      this.visibility = !this.visibility
+      this.passwordFieldType = this.visibility ? 'text' : 'password'
+      this.visibilityIcon =  this.visibility ? 'visibility_off' : 'visibility'
+    },
     navigateTo(routeName) {
       this.$router.push({ name: routeName })
     }
     },
-  setup () {
+    setup () {
       const posts = ref([]);
       const { list, remove } = postsService();
       const columns = [
@@ -83,7 +178,8 @@ export default defineComponent({
       }
       }
       return { posts, columns, handleDelete }
-  }
+  },
+  
 }
 );
 
