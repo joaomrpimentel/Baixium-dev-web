@@ -29,30 +29,22 @@
           <div class="column q-pa-xm">
             <div class="row">
               <q-card square class="shadow-24" style="width:600px;height:350px;">
-                <q-card-section class="bg-black" style="height:60px;">
-                  <h4 class="text-h5 text-white q-my-md">Aqui vai algum texto. Ou não</h4>
+                <q-card-section class="bg-black" style="height:60px; display: flex; align-items: center;">
+                  <h4 class="text-h5 text-white q-my-md text-center">{{ randomTitle }}</h4>
                 </q-card-section>
                 <q-card-section>
-                  <q-fab color="primary" @click="switchTypeForm" icon="add" class="absolute" style="top: 0; right: 12px; transform: translateY(-50%);">
+                  <q-fab color="primary" @click="switchTypeFormAndNavigate" icon="add" class="absolute" style="top: 0; right: 12px; transform: translateY(-50%);">
                   <q-tooltip>
                     Registration of a new user
                   </q-tooltip>
                   </q-fab>
                   <q-form>
-                    <q-input ref="email" square v-model="email" type="email" lazy-rules :rules="[this.required,this.isEmail,this.short]" label="Email">
+                    <q-input ref="email" clearable v-model="email" type="email" lazy-rules :rules="[this.required,this.isEmail]" label="Email">
                       <template v-slot:prepend>
                         <q-icon name="email" />
                       </template>
                     </q-input>
-                    <q-input ref="password" square v-model="password" :type="passwordFieldType" lazy-rules :rules="[this.required,this.short]" label="Password">
-                      <template v-slot:prepend>
-                        <q-icon name="lock" />
-                      </template>
-                      <template v-slot:append>
-                        <q-icon :name="visibilityIcon" @click="switchVisibility" class="cursor-pointer" />
-                      </template>
-                    </q-input>
-                    <q-input ref="repassword" v-if="register" square v-model="repassword" :type="passwordFieldType" lazy-rules :rules="[this.required,this.short,this.diffPassword]" label="Repeat password">
+                    <q-input ref="password" square clearable v-model="password" :type="passwordFieldType" lazy-rules :rules="[this.required]" label="Password">
                       <template v-slot:prepend>
                         <q-icon name="lock" />
                       </template>
@@ -91,7 +83,45 @@ import { useQuasar } from 'quasar';
 
 export default defineComponent({
   name: 'LoginPage',
+  data () {
+    return {
+      titles: [
+        'Welcome Back!',
+        'Great to See You Again!',
+        'Back to Our World!',
+        'Happy to Have You Back!',
+        'Welcome Back Once More!',
+        'You\'ve Been Missed!',
+        'Back to the Family!',
+        'The Return of a Friend!',
+        'Missed Your Presence!',
+        'Reconnecting with Us!'
+      ],
+      title: 'Authorization',
+      email: '',
+      password: '',
+      passwordFieldType: 'password',
+      btnLabel: 'Login',
+      visibility: false,
+      visibilityIcon: 'visibility'
+    }
+  },
+  computed: {
+    randomTitle() {
+      // Escolhe aleatoriamente um dos títulos do array titles
+      return this.titles[Math.floor(Math.random() * this.titles.length)];
+    }
+  },
   methods: {
+    // Muda a forma do do icone (faz um leve giro) e redireciona para a tela de cadastro
+    switchTypeFormAndNavigate () {
+      this.register = !this.register
+      this.title = this.register ? 'New User' : 'Authorization'
+      this.btnLabel = this.register ? 'Registration' : 'Login'
+      setTimeout(() => {
+        this.navigateTo('register');
+    }, 600);
+    },
     required (val) {
       return  (val && val.length > 0 || 'Field must be completed!')
     },
@@ -99,9 +129,6 @@ export default defineComponent({
        const val2 = this.$refs.password.value
        return (val && (val===val2) || 'Passwords do not match!')
      },
-    short(val) {
-      return  (val && val.length > 3 || 'teste')
-    },
     isEmail (val) {
        const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/
        return (emailPattern.test(val) || 'Enter a valid email')
@@ -116,7 +143,6 @@ export default defineComponent({
           this.$refs.email.validate()
           this.$refs.password.validate()      
        }
-      
        if (!this.register) 
          if (!this.$refs.email.hasError && (!this.$refs.password.hasError))
      {
