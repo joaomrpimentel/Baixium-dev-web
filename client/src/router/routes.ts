@@ -19,6 +19,12 @@ const routes: RouteRecordRaw[] = [
     children: [{ path: '', name: 'register', component: () => import('pages/RegisterPage.vue') }],
   },
 
+  {
+    path: '/',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', name: 'aboutUs', component: () => import('pages/AboutUsPage.vue') }],
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {
@@ -26,5 +32,4 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/ErrorNotFound.vue'),
   },
 ];
-
 export default routes;
