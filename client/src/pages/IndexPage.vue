@@ -31,7 +31,7 @@
             Share and explore knowledge with other students
         </div>
         <div class="q-mt-sm">
-            <q-btn flat dense label="Sing Up" @click="navigateTo('')" />
+            <q-btn flat dense label="Sign Up" @click="navigateTo('register')" />
             <q-btn flat dense label="Login" @click="navigateTo('login')" />
         </div>
       </div>

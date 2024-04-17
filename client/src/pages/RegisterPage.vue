@@ -23,15 +23,34 @@
         </q-toolbar>
     </q-header>
     <q-body>
-      <div style="display: flex; justify-content: center; align-items: center; height: 70vh; flex-direction: column;">
-        <div class="q-mt-sm">
-          <h3>TELA DE CADASTRO DE NOVO USUARIO</h3>
-        </div>
-        <div class="q-mt-sm">
-            EM DESENVOLVIMENTO
-        </div>
-      </div>
-    </q-body>
+    <div class="q-mt-lg" style="display: flex; justify-content: center; align-items: center; height: 70vh; flex-direction: column;">
+    <q-layout view="lHh Lpr lFf">
+        <q-page-container>
+        <q-page class="row items-center" style="margin: 0px 12%">
+            <q-card class="q-pa-md shadow-2 my_card" bordered style="width:40%;">
+            <q-card-section class="text-center">
+                <div class="text-grey-9 text-h5 text-weight-bold">Sign Up</div>
+                <div class="text-grey-8">Create an account below</div>
+            </q-card-section>
+            <q-card-section>
+                <q-input dense outlined v-model="email" lazy-rules :rules="[this.required,this.isEmail]" label="Email Address"></q-input>
+                <q-input dense outlined class="q-mt-md" v-model="name" type="text" lazy-rules :rules="[this.required]" label="Username" ></q-input>
+                <q-input dense outlined class="q-mt-md" v-model="password" type="password" lazy-rules :rules="[this.required]" label="Password" ></q-input>
+                <q-input dense outlined class="q-mt-md" v-model="password" type="password" lazy-rules :rules="[this.required]" label="Repeat your password" ></q-input>
+            </q-card-section>
+            <q-card-section class="text-center q-pt-none">
+            <div class="text-grey-8"> By creating an account, you agree to our
+              <a href=" " class="text-dark text-weight-bold" style="text-decoration: none">Terms and Conditions</a></div>
+            </q-card-section>
+            <q-card-section>
+                <q-btn style="border-radius: 8px;" color="dark" rounded size="md" label="Sign Up" no-caps class="full-width"></q-btn>
+            </q-card-section>
+            </q-card>
+        </q-page>
+        </q-page-container>
+    </q-layout>
+    </div>
+  </q-body>
     <q-footer bordered class="bg-grey-1 text-primary">
     <q-tabs no-caps active-color="primary" indicator-color="transparent" class="text-grey-8" v-model="tab">
         <q-tab name="About Us" label="About Us" @click="navigateTo('aboutUs')" />
