@@ -11,10 +11,26 @@
                 <div class="text-grey-8">Create an account below</div>
             </q-card-section>
             <q-card-section>
-                <q-input dense outlined v-model="email" lazy-rules :rules="[this.required,this.isEmail]" label="Email Address"></q-input>
-                <q-input dense outlined class="q-mt-md" v-model="name" type="text" lazy-rules :rules="[this.required]" label="Username" ></q-input>
-                <q-input dense outlined class="q-mt-md" v-model="password" type="password" lazy-rules :rules="[this.required]" label="Password" ></q-input>
-                <q-input dense outlined class="q-mt-md" v-model="password" type="password" lazy-rules :rules="[this.required]" label="Repeat your password" ></q-input>
+                <q-input dense outlined v-model="email" lazy-rules :rules="[this.required,this.isEmail]" label="Email Address">
+                    <template v-slot:prepend>
+                        <q-icon name="email" />
+                    </template>
+                </q-input>
+                <q-input dense outlined class="q-mt-md" v-model="name" type="text" lazy-rules :rules="[this.required]" label="Username" >
+                    <template v-slot:prepend>
+                        <q-icon name="person" />
+                    </template>
+                </q-input>
+                <q-input dense outlined class="q-mt-md" v-model="password" type="password" lazy-rules :rules="[this.required]" label="Password" >
+                    <template v-slot:prepend>
+                        <q-icon name="lock" />
+                    </template>
+                </q-input>
+                <q-input dense outlined class="q-mt-md" v-model="password" type="password" lazy-rules :rules="[this.required]" label="Repeat your password" >
+                    <template v-slot:prepend>
+                        <q-icon name="lock" />
+                    </template>
+                </q-input>
             </q-card-section>
             <q-card-section class="text-center q-pt-none">
             <div class="text-grey-8"> By creating an account, you agree to our
@@ -39,11 +55,23 @@ import { defineComponent, ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 
 export default defineComponent({
-    name: 'IndexPage',
+    name: 'RegisterPage',
     components: {
         'main-header': MainHeader,
         'main-footer': MainFooter
     },
+    data () {
+    return {
+      email: '',
+      username: '',
+      password: '',
+      passwordFieldType: 'password',
+      register: false,
+      btnLabel: 'Login',
+      visibility: false,
+      visibilityIcon: 'visibility'
+    }
+  },
     methods: {
     navigateTo(routeName) {
       this.$router.push({ name: routeName })
