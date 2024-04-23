@@ -6,16 +6,17 @@
         <q-page style="margin: 0px 250px" class="row items-center">
           <div class="column q-pa-xm">
             <div class="row">
-              <q-card square class="shadow-24" style="width:600px;height:350px;">
-                <q-card-section class="bg-black" style="height:60px; display: flex; align-items: center;">
-                  <h4 class="text-h5 text-white q-my-md text-center">{{ randomTitle }}</h4>
-                </q-card-section>
-                <q-card-section>
-                  <q-fab color="primary" @click="switchTypeFormAndNavigate" icon="add" class="absolute" style="top: 0; right: 12px; transform: translateY(-50%);">
+              <q-card square class="q-pa-md shadow-2 my_card" bordered style="width:600px;height:400px;">
+                <q-card-section class="text-center">
+                  <div class="text-grey-9 text-h5 text-weight-bold">Login</div>
+                  <div class="text-grey-8">{{ randomTitle }}</div>
+                  <q-fab color="black" @click="switchTypeFormAndNavigate" icon="add" class="absolute" style="top: 50px; right: 12px; transform: translateY(-50%);">
                   <q-tooltip>
                     Registration of a new user
                   </q-tooltip>
                   </q-fab>
+                </q-card-section>
+                <q-card-section>
                   <q-form>
                     <q-input ref="email" clearable v-model="email" type="email" lazy-rules :rules="[this.required,this.isEmail]" label="Email">
                       <template v-slot:prepend>
@@ -33,7 +34,7 @@
                   </q-form>
                 </q-card-section>
                 <q-card-actions class="q-px-lg">
-                  <q-btn label="Login" unelevated size="lg" color="secondary" @click="submit" class="full-width text-white" />
+                  <q-btn style="border-radius: 8px;" color="dark" rounded size="md" label="Sign Up" no-caps class="full-width"></q-btn>
                 </q-card-actions>
                 <q-card-section v-if="!register" class="text-center q-pa-sm">
                   <p class="text-grey-6">Forgot Password?</p>
