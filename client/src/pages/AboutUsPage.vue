@@ -4,22 +4,22 @@
       <q-page>
         <q-container>
           <h4 style="text-align: center; margin-bottom: 20px;">Conheça nossa equipe</h4>
+          <div class="col-3 text-center q-pa-md">
+              <q-avatar size="250px" round>
+                <img src="https://avatars.githubusercontent.com/u/136522676?v=4" />
+              </q-avatar>
+              <h5>João Marcos</h5>
+            </div>
           <div class="row justify-center">
             <div class="col-3 text-center q-pa-md">
               <q-avatar size="250px" round>
-                <img src="https://media-gig4-1.cdn.whatsapp.net/v/t61.24694-24/427935329_430913112848938_2370910870276119306_n.jpg?ccb=11-4&oh=01_ASARqEP9ZejTzW9KI8bUzwdlvdCieGm1vYZnsvGc_K2qkg&oe=662C22AB&_nc_sid=e6ed6c&_nc_cat=107" />
+                <img src="https://avatars.githubusercontent.com/u/69252647?v=4" />
               </q-avatar>
               <h5>Thalison Vinicius</h5>
             </div>
             <div class="col-3 text-center q-pa-md">
               <q-avatar size="250px" round>
-                <img src="https://media-gig4-1.cdn.whatsapp.net/v/t61.24694-24/427935329_430913112848938_2370910870276119306_n.jpg?ccb=11-4&oh=01_ASARqEP9ZejTzW9KI8bUzwdlvdCieGm1vYZnsvGc_K2qkg&oe=662C22AB&_nc_sid=e6ed6c&_nc_cat=107" />
-              </q-avatar>
-              <h5>João Marcos</h5>
-            </div>
-            <div class="col-3 text-center q-pa-md">
-              <q-avatar size="250px" round>
-                <img src="https://media-gig4-1.cdn.whatsapp.net/v/t61.24694-24/427935329_430913112848938_2370910870276119306_n.jpg?ccb=11-4&oh=01_ASARqEP9ZejTzW9KI8bUzwdlvdCieGm1vYZnsvGc_K2qkg&oe=662C22AB&_nc_sid=e6ed6c&_nc_cat=107" />
+                <img src="https://avatars.githubusercontent.com/u/57851959?v=4" />
               </q-avatar>
               <h5>Vinicius Caetano</h5>
             </div>
