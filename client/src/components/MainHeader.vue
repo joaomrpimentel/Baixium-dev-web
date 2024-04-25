@@ -11,7 +11,7 @@
           </q-toolbar-title>
           <div style="width: 13%" class="row justify-between">
             <div>
-                <q-btn flat dense label="Create Post" @click="navigateTo('contacts')" />
+                <q-btn flat dense label="Create Post" @click="navigateTo('registerArticles')" />
             </div>
             <div>
                 <q-btn flat dense label="Profile" @click="navigateTo('about')" />
