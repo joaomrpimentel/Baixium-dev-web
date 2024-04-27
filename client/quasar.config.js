@@ -54,7 +54,7 @@ module.exports = configure(function (ctx) {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       env : {
         API_URL: ctx.dev 
-        ? 'http://localhost:3000'
+        ? 'https://66168787b8b8e32ffc7dc476.mockapi.io/api'
         : 'https://api.example.com'
       },
       // vueRouterBase,
