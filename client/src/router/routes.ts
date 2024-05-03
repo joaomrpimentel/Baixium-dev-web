@@ -8,19 +8,19 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/',
+    path: '/login',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', name: 'login', component: () => import('pages/LoginPage.vue') }],
   },
 
   {
-    path: '/',
+    path: '/register',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', name: 'register', component: () => import('pages/RegisterPage.vue') }],
   },
 
   {
-    path: '/',
+    path: '/about_us',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', name: 'aboutUs', component: () => import('pages/AboutUsPage.vue') }],
   },
@@ -28,6 +28,11 @@ const routes: RouteRecordRaw[] = [
     path: '/register_articles',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', name: 'registerArticles', component: () => import('pages/RegisterArticlesPage.vue') }],
+  },
+  {
+    path: '/feed_articles',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', name: 'feed-articles', component: () => import('pages/FeedArticles.vue') }],
   },
 
   // Always leave this as last one,
