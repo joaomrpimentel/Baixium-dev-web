@@ -14,7 +14,7 @@
                 <q-btn flat dense label="Create Post" @click="navigateTo('registerArticles')" />
             </div>
             <div>
-                <q-btn flat dense label="Profile" @click="navigateTo('about')" />
+                <q-btn flat dense label="Profile" @click="navigateTo('profile')" />
             </div>
             <div>
                 <q-btn flat dense label="Home" @click="navigateTo('feed-articles')" />
