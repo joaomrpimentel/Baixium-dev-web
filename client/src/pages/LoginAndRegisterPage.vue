@@ -70,6 +70,7 @@
 <script>
 import MainHeader from 'src/components/MainHeader.vue';
 import MainFooter from 'src/components/MainFooter.vue';
+import { auth } from '../store/auth'
 import { defineComponent } from 'vue';
 
 
@@ -160,6 +161,8 @@ export default defineComponent({
         color: 'positive',
         message: 'Logged in'
         })
+        auth.isLoggedIn = true;
+        this.navigateTo('feed-articles');
      }
      },
     switchTypeForm(){ 

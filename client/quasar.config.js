@@ -55,7 +55,7 @@ module.exports = configure(function (ctx) {
       env : {
         API_URL: ctx.dev 
         ? 'https://66168787b8b8e32ffc7dc476.mockapi.io/api'
-        : 'https://api.example.com'
+        : 'https://66168787b8b8e32ffc7dc476.mockapi.io/api'
       },
       // vueRouterBase,
       // vueDevtools,

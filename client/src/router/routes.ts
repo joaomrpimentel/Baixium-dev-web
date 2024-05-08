@@ -1,5 +1,6 @@
 import { RouteRecordRaw } from 'vue-router';
 
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -28,16 +29,19 @@ const routes: RouteRecordRaw[] = [
     path: '/register_articles',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', name: 'registerArticles', component: () => import('pages/RegisterArticlesPage.vue') }],
+    meta: { requiresAuth: true }
   },
   {
     path: '/feed_articles',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', name: 'feed-articles', component: () => import('pages/FeedArticles.vue') }],
+    meta: { requiresAuth: true }
   },
   {
     path: '/profile',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', name: 'profile', component: () => import('pages/ProfilePage.vue') }],
+    meta: { requiresAuth: true }
   },
 
   // Always leave this as last one,
@@ -47,4 +51,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/ErrorNotFound.vue'),
   },
 ];
+
+
 export default routes;
