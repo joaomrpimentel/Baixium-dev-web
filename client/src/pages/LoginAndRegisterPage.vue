@@ -3,10 +3,8 @@
   <q-body>
     <div class="q-mt-lg" style="display: flex; justify-content: center; align-items: center; height: 70vh; flex-direction: column;">
       <q-layout view="lHh Lpr fff">
-        <q-page class="q-mt-lg row items-center justify-center">
-          <div class="column q-pa-xm">
-            <div class="row">
-              <q-card square class="q-mb-md shadow-2 my_card" bordered style="width:500px;height:600px;">
+        <q-page class="row items-center" style="margin: 0px 12%">
+              <q-card class="q-pa-md shadow-2 my_card" bordered style="width:40%;height:40%;">
                 <q-card-section class="text-center">
                   <div class="text-grey-9 text-h5 text-weight-bold">{{ title }}</div>
                   <div v-if="!register" class="text-grey-8">{{ randomTitleLogin }}</div>
@@ -19,17 +17,17 @@
                     </q-tooltip>
                   </q-fab>
                   <q-form class="q-px-sm q-pt-xl">
-                    <q-input ref="email" square clearable v-model="email" type="email" lazy-rules :rules="[this.required,this.isEmail,this.short]" label="Email">
+                    <q-input ref="email" dense outlined v-model="email" type="email" lazy-rules :rules="[this.required,this.isEmail,this.short]" label="Email">
                       <template v-slot:prepend>
                         <q-icon name="email" />
                       </template>
                     </q-input>
-                    <q-input ref="username" v-if="register" square clearable v-model="username" lazy-rules :rules="[this.required,this.short]" type="username" label="User">
+                    <q-input ref="username" v-if="register" dense outlined v-model="username" lazy-rules :rules="[this.required,this.short]" type="username" label="User">
                       <template v-slot:prepend>
                         <q-icon name="person" />
                       </template>
                     </q-input>
-                    <q-input  ref="password" square clearable v-model="password" :type="passwordFieldType" lazy-rules :rules="[this.required,this.short]" label="Password"> 
+                    <q-input  ref="password" dense outlined v-model="password" :type="passwordFieldType" lazy-rules :rules="[this.required,this.short]" label="Password"> 
                       <template v-slot:prepend>
                         <q-icon name="lock" />
                       </template>
@@ -37,7 +35,7 @@
                         <q-icon :name="visibilityIcon" @click="switchVisibility" class="cursor-pointer" />
                       </template>
                     </q-input>
-                    <q-input ref="repassword" v-if="register" square clearable v-model="repassword" :type="passwordFieldType" lazy-rules :rules="[this.required,this.short,this.diffPassword]" label="Repeat Password">
+                    <q-input ref="repassword" v-if="register" dense outlined v-model="repassword" :type="passwordFieldType" lazy-rules :rules="[this.required,this.short,this.diffPassword]" label="Repeat Password">
                       <template v-slot:prepend>
                         <q-icon name="lock" />
                       </template>
@@ -58,8 +56,6 @@
                   <p class="text-grey-6">Forgot Password?</p>
                 </q-card-section>
               </q-card>
-            </div>
-          </div>
         </q-page>
       </q-layout>
     </div>
