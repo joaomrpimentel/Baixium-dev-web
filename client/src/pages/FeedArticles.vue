@@ -1,6 +1,7 @@
 <template>
 <main-header></main-header>
 <div class="q-pa-md items-start q-gutter-md" style="margin: 0px 20%">
+  <q-infinite-scroll @load="onLoad" :offset="250">
     <q-card v-for="article in articles" :key="article.id">
       <q-card-section>
         <div class="grey">{{ findUserName(article.userId) }}</div>
@@ -33,6 +34,12 @@
         </div>
       </q-slide-transition>
     </q-card>
+    <template v-slot:loading>
+        <div class="row justify-center q-my-md">
+          <q-spinner-dots color="primary" size="40px" />
+        </div>
+      </template>
+  </q-infinite-scroll>
   </div>
 <main-footer></main-footer>
 </template>
@@ -44,49 +51,65 @@
     import { api } from 'src/boot/axios';
 
     export default {
-    components: {
-        'main-header': MainHeader,
-        'main-footer': MainFooter,
-    },
+        components: {
+            'main-header': MainHeader,
+            'main-footer': MainFooter,
+        },
 
-    setup() {
-        const articles = ref([]);
-        const likes = ref({});
-        const users = ref([]);
+        setup() {
+            const articles = ref([]);
+            const likes = ref({});
+            const users = ref([]);
+            const currentPage = ref(0);
 
-        onMounted(async () => {
-        try {
-            // por algum motivo list não tá funcionando, mas eu cansei... Depois alguém mexe
-            const articlesResponse = await api.get('articles');
-            const usersResponse = await api.get('users');
+            onMounted(async () => {
+                try {
+                    const articlesResponse = await api.get(`articles?page=${currentPage.value}&limit=10`);
+                    const usersResponse = await api.get('users');
 
-            // adicionar nos artigos a propriedade expanded para controlar a expansão dos artigos
-            articles.value = articlesResponse.data.map((article) => ({
-            ...article, 
-            expanded: false, 
-            }));
-            articles.value = articlesResponse.data;
-            users.value = usersResponse.data;
-        } catch (error) {
-            console.error(error);
-        }
-        });
+                    articles.value = articlesResponse.data.map((article) => ({
+                        ...article,
+                        expanded: false,
+                    }));
+                    users.value = usersResponse.data;
+                } catch (error) {
+                    console.error(error);
+                }
+            });
 
-        const toggleLike = (id) => {
-        likes.value[id] = (likes.value[id] || 0) + 1; 
-        // fazer o envio desse like
-        };
+            const toggleLike = (id) => {
+                likes.value[id] = (likes.value[id] || 0) + 1;
+                // fazer o envio desse like
+            };
 
-        const findUserName = (userId) => {
-        const user = users.value.find((user) => user.id === userId);
-        return user ? user.name : 'Unknown'; // caso não tenha usuário
-        };
+            const findUserName = (userId) => {
+                const user = users.value.find((user) => user.id === userId);
+                return user ? user.name : 'Unknown'; // caso não tenha usuário
+            };
 
-        return {
-        articles,
-        toggleLike, 
-        findUserName, 
-        };
-    },
+            return {
+                articles,
+                toggleLike,
+                findUserName,
+                onLoad(index, done) {
+                  currentPage.value++;
+                  api.get(`articles?page=${currentPage.value}&limit=10`)
+                      .then(response => {
+                          const newArticles = response.data.map(article => ({
+                              ...article,
+                              expanded: false,
+                          }));
+                          articles.value = [...articles.value, ...newArticles];
+                          done();
+                      })
+                      .catch(error => {
+                          console.error('Error loading more articles:', error);
+                          done();
+                      });
+              }
+
+
+            };
+        },
     };
 </script>
