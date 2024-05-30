@@ -125,6 +125,12 @@ export default defineComponent({
     }
   },
   methods: {
+    checkRegisterParam() {
+      const registerParam = this.$route.query.register;
+      this.register = registerParam === 'true';
+      this.title = this.register ? 'Sign up' : 'Log in';
+      this.btnLabel = this.register ? 'Sign up' : 'Log in';
+    },
     required (val) {
       return  (val && val.length > 0 || 'Field must be completed!')
     },
@@ -174,7 +180,10 @@ export default defineComponent({
     navigateTo(routeName) {
       this.$router.push({ name: routeName })
     }
-    }
+  },
+  mounted() {
+    this.checkRegisterParam(); // Verifica se estamos na parte de registro ou login
+  },
   
 }
 );
