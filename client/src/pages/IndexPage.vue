@@ -31,8 +31,14 @@ export default defineComponent({
         'main-footer': MainFooter
     },
     methods: {
-    navigateTo(routeName) {
-      this.$router.push({ name: routeName })
+        navigateTo(routeName) {
+      if(routeName === 'login') {
+        // Redirecionar para a parte de login da página de LoginAndRegisterPage
+        this.$router.push({ name: 'login' })
+      } else if(routeName === 'register') {
+        // Redirecionar para a parte de registro da página de LoginAndRegisterPage
+        this.$router.push({ name: 'login', query: { register: true } })
+      }
     }
     },
     setup () {
