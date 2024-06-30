@@ -55,7 +55,7 @@ module.exports = configure(function (ctx) {
       env : {
         API_URL: ctx.dev 
         ? 'https://66168787b8b8e32ffc7dc476.mockapi.io/api'
-        : 'https://api.example.com'
+        : 'https://66168787b8b8e32ffc7dc476.mockapi.io/api'
       },
       // vueRouterBase,
       // vueDevtools,
@@ -107,7 +107,9 @@ module.exports = configure(function (ctx) {
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
     framework: {
-      config: {},
+      config: {
+        dark: true
+      },
 
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
