@@ -2,13 +2,23 @@
   <main-header></main-header>
   <div class="q-pa-md items-start q-gutter-md" style="margin: 0px 20%">
     <q-infinite-scroll @load="onLoad" :offset="250">
-      <q-card v-for="article in articles" :key="article.id" @click="openDialog(article)" class="clickable-card q-mb-md">
+      <q-card
+        v-for="article in articles"
+        :key="article.id"
+        @click="openDialog(article)"
+        class="clickable-card q-mb-md"
+      >
         <q-card-section>
           <div class="grey">{{ findUserName(article.userId) }}</div>
           <div class="text-h5 q-mt-sm q-mb-xs">{{ article.title }}</div>
-          <div class="text-caption text-grey">{{ new Date(article.createdAt).toLocaleDateString() }}</div>
+          <div class="text-caption text-grey">
+            {{ new Date(article.createdAt).toLocaleDateString() }}
+          </div>
           <div class="text-caption text-grey">{{ article.tags }}</div>
-          <div class="text-red text-weight-bold"> <q-icon name="favorite" size="1.3rem"/> {{ article.likes || 0 }} LIKES  </div> 
+          <div class="text-red text-weight-bold">
+            <q-icon name="favorite" size="1.3rem" />
+            {{ article.likes || 0 }} LIKES
+          </div>
         </q-card-section>
       </q-card>
       <template v-slot:loading>
@@ -22,13 +32,21 @@
   <q-dialog v-model="dialog">
     <q-card class="q-pa-md">
       <q-card-actions align="right">
-        <q-btn flat round icon="close" @click="dialog = false" class="close-button" />
+        <q-btn
+          flat
+          round
+          icon="close"
+          @click="dialog = false"
+          class="close-button"
+        />
       </q-card-actions>
 
       <q-card-section>
         <div class="grey">{{ findUserName(selectedArticle.userId) }}</div>
         <div class="text-h5 q-mt-sm q-mb-xs">{{ selectedArticle.title }}</div>
-        <div class="text-caption text-grey">{{ new Date(selectedArticle.createdAt).toLocaleDateString() }}</div>
+        <div class="text-caption text-grey">
+          {{ new Date(selectedArticle.createdAt).toLocaleDateString() }}
+        </div>
         <div class="text-caption text-grey">{{ selectedArticle.tags }}</div>
       </q-card-section>
 
@@ -39,7 +57,14 @@
       </q-card-section>
 
       <q-card-actions>
-        <q-btn flat color="red" icon="favorite" @click="toggleLike(selectedArticle.id)"> {{ selectedArticle.likes || 0 }} Likes </q-btn>
+        <q-btn
+          flat
+          color="red"
+          icon="favorite"
+          @click="toggleLike(selectedArticle.id)"
+        >
+          {{ selectedArticle.likes || 0 }} Likes
+        </q-btn>
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -69,7 +94,9 @@ export default {
 
     onMounted(async () => {
       try {
-        const articlesResponse = await api.get(`articles?page=${currentPage.value}&limit=10`);
+        const articlesResponse = await api.get(
+          `Article?page=${currentPage.value}&limit=10`
+        );
         const usersResponse = await api.get('users');
 
         articles.value = articlesResponse.data.map((article) => ({
@@ -99,7 +126,8 @@ export default {
 
     const onLoad = (index, done) => {
       currentPage.value++;
-      api.get(`articles?page=${currentPage.value}&limit=10`)
+      api
+        .get(`articles?page=${currentPage.value}&limit=10`)
         .then((response) => {
           const newArticles = response.data.map((article) => ({
             ...article,

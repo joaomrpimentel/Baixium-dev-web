@@ -3,7 +3,7 @@
         <q-toggle
           v-model="darkMode"
           checked-icon="dark_mode"
-          color="yellow"
+          color="blue"
           unchecked-icon="light_mode"
         />
     </div>

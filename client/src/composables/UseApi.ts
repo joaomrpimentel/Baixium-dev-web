@@ -4,6 +4,7 @@ export default function useApi(url : string) {
     const list = async () => {
         try {
             const { data } = await api.get(url)
+            console.log(data)
             return data
         } catch (error) {
             throw new Error('erro')
@@ -28,6 +29,10 @@ export default function useApi(url : string) {
             throw new Error('erro')
         }
     }
+    
+ 
+
+
 
     return{
         list,

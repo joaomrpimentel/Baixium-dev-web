@@ -1,23 +1,20 @@
 <template>
+  <div>
     <main-header></main-header>
     <div class="q-pa-md items-start q-gutter-md" style="margin: 0px 10%">
       <q-card>
         <q-card-section style="display: flex; align-items: center; justify-content: space-between;">
           <div style="display: flex; align-items: center; justify-content: space-between; width: 20%">
             <q-avatar>
-              <img src="../assets/Baixium-logo.svg-1.svg">
+              <img :src="user.avatarURL" alt="User Avatar">
             </q-avatar>
             <div>
-              <div class="text-h5 q-mt-sm q-mb-xs">Baixium User</div>
+              <div class="text-h5 q-mt-sm q-mb-xs">{{ user.name }}</div>
               <div class="text-caption text-black">
-                <q-badge color="grey">
-                  Science
-                </q-badge>
-                <q-badge color="grey">
-                  Technology
-                </q-badge>
+                <q-badge color="grey">Science</q-badge>
+                <q-badge color="grey">Technology</q-badge>
               </div>
-              <div class="text-caption">Passionate about sharing knowledge</div>
+              <div class="text-caption">{{ user.description }}</div>
             </div>
           </div>
           <div>
@@ -25,23 +22,21 @@
           </div>
         </q-card-section>
       </q-card>
-      
+  
       <div>
         <div class="text-h5">My Articles</div>
         <div class="text-caption">View all your articles</div>
       </div>
-      
+  
       <div v-for="article in articles" :key="article.id">
         <q-card>
           <q-card-section style="display: flex;">
             <div style="margin-right: 1%">
-              <img :src="article.img">
+              <img :src="article.img" alt="Article Image">
             </div>
             <div>
-              <div>
-                <div class="text-h6">{{ article.title }}</div>
-                <div class="text-caption text-grey">{{ article.content }}</div>
-              </div>
+              <div class="text-h6">{{ article.title }}</div>
+              <div class="text-caption text-grey">{{ article.content }}</div>
             </div>
           </q-card-section>
         </q-card>
@@ -49,7 +44,7 @@
       
       <!-- Edit Profile Dialog -->
       <q-dialog v-model="showEditProfile">
-        <q-card style="width: 400px; max-width: 90%;">
+        <q-card style="width:40%;">
           <q-card-section>
             <div class="text-h6">Edit Profile</div>
           </q-card-section>
@@ -67,43 +62,58 @@
       </q-dialog>
     </div>
     <main-footer></main-footer>
-  </template>
-  
-  <script>
-  import MainHeader from 'src/components/MainHeader.vue';
-  import MainFooter from 'src/components/MainFooter.vue';
-  
-  export default {
-    components: {
-      'main-header': MainHeader,
-      'main-footer': MainFooter,
-    },
-    data() {
-      return {
-        showEditProfile: false,
-        userName: 'Baixium User',
-        currentPassword: '',
-        newPassword: '',
-        confirmNewPassword: '',
-        articles: [
-          { id: 1, title: 'Article Title 1', content: 'Article Content 1', img: 'https://placehold.co/150' },
-          { id: 2, title: 'Article Title 2', content: 'Article Content 2', img: 'https://placehold.co/150' },
-          { id: 3, title: 'Article Title 3', content: 'Article Content 3', img: 'https://placehold.co/150' },
-          { id: 4, title: 'Article Title 4', content: 'Article Content 4', img: 'https://placehold.co/150' },
-          { id: 5, title: 'Article Title 5', content: 'Article Content 5', img: 'https://placehold.co/150' }
-        ]
-      };
-    },
-    methods: {
-      saveProfile() {
-        // Lógica para salvar as alterações do perfil :D
-        console.log('Username:', this.userName);
-        console.log('Current Password:', this.currentPassword);
-        console.log('New Password:', this.newPassword);
-        console.log('Confirm New Password:', this.confirmNewPassword);
-        this.showEditProfile = false;
-      },
-    },
-  };
-  </script>
-  
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref, onMounted } from 'vue';
+import MainHeader from 'src/components/MainHeader.vue';
+import MainFooter from 'src/components/MainFooter.vue';
+import { auth } from '../store/auth';
+import postsService from '../services/posts';
+
+export default defineComponent({
+  components: {
+    MainHeader,
+    MainFooter
+  },
+  setup() {
+    const user = ref(auth.user);
+    const showEditProfile = ref(false);
+    const userName = ref(user.value?.name || '');
+    const currentPassword = ref('');
+    const newPassword = ref('');
+    const confirmNewPassword = ref('');
+    const articles = ref([]);
+
+    onMounted(async () => {
+      const { list } = postsService();
+      const userArticles = await list();
+      articles.value = userArticles;
+    });
+
+    const saveProfile = () => {
+      console.log('Username:', userName.value);
+      console.log('Current Password:', currentPassword.value);
+      console.log('New Password:', newPassword.value);
+      console.log('Confirm New Password:', confirmNewPassword.value);
+      showEditProfile.value = false;
+    };
+
+    return {
+      user,
+      showEditProfile,
+      userName,
+      currentPassword,
+      newPassword,
+      confirmNewPassword,
+      articles,
+      saveProfile
+    };
+  },
+});
+</script>
+
+<style scoped>
+/* Your styles here */
+</style>

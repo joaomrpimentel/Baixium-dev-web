@@ -16,7 +16,7 @@
 
                     </q-card-section>
                     <q-card-actions>
-                        <q-btn label="Post" color="black" @click="submit" class="full-width"/>
+                        <q-btn label="Post" @click="submit" :class="{'dark-mode full-width': !isDark , 'light-mode full-width': isDark}"/>
                     </q-card-actions>
                 </q-form>
             </q-card>
@@ -36,6 +36,11 @@ export default {
         'main-header': MainHeader,
         'main-footer': MainFooter
     },
+    computed: {
+        isDark() {
+            return this.$q.dark.isActive
+        }
+    },
     setup() {
         const { post } = postsService();
 
@@ -49,7 +54,6 @@ export default {
         }
 
         const $q = useQuasar();
-
         const title = ref('');
         const article_content = ref('');
         const submit = () => {
@@ -60,9 +64,7 @@ export default {
                 icon: 'edit',
                 message: 'Post created successfully'
             });
-       
         }
-            
         
         return {
             title,
@@ -72,7 +74,7 @@ export default {
     }
 }
 
-    
-    
 
+    
 </script>
+
