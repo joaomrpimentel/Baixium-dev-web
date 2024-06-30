@@ -3,7 +3,7 @@
   <div class="q-pa-md items-start q-gutter-md" style="margin: 0px 20%">
     <q-infinite-scroll @load="onLoad" :offset="250">
       <q-card
-        v-for="article in articles"
+        v-for="article in readArticles"
         :key="article.id"
         @click="openDialog(article)"
         class="clickable-card q-mb-md"
@@ -17,7 +17,7 @@
           <div class="text-caption text-grey">{{ article.tags }}</div>
           <div class="text-red text-weight-bold">
             <q-icon name="favorite" size="1.3rem" />
-            {{ article.likes || 0 }} LIKES
+            {{ likes[article.id] || 0 }} LIKES
           </div>
         </q-card-section>
       </q-card>
@@ -63,7 +63,7 @@
           icon="favorite"
           @click="toggleLike(selectedArticle.id)"
         >
-          {{ selectedArticle.likes || 0 }} Likes
+          {{ likes[selectedArticle.id] || 0 }} Likes
         </q-btn>
       </q-card-actions>
     </q-card>
@@ -76,7 +76,8 @@
 import MainHeader from 'src/components/MainHeader.vue';
 import MainFooter from 'src/components/MainFooter.vue';
 import { onMounted, ref } from 'vue';
-import { api } from 'src/boot/axios';
+import postsService from '../services/posts';
+import usersService from '../services/users'; // Import usersService
 
 export default {
   components: {
@@ -86,37 +87,28 @@ export default {
 
   setup() {
     const articles = ref([]);
+    const readArticles = ref([]);
     const likes = ref({});
     const users = ref([]);
-    const currentPage = ref(0);
     const dialog = ref(false);
     const selectedArticle = ref({});
 
     onMounted(async () => {
-      try {
-        const articlesResponse = await api.get(
-          `Article?page=${currentPage.value}&limit=10`
-        );
-        const usersResponse = await api.get('users');
-
-        articles.value = articlesResponse.data.map((article) => ({
-          ...article,
-          expanded: false,
-        }));
-        users.value = usersResponse.data;
-      } catch (error) {
-        console.error(error);
-      }
+      const { list } = postsService();
+      const usersResponse = await usersService().list(); // Fetch users
+      const response = await list();
+      users.value = usersResponse.data;
+      articles.value = response;
+      onLoad(); 
     });
 
     const toggleLike = (id) => {
       likes.value[id] = (likes.value[id] || 0) + 1;
-      // send this like to the server
     };
 
     const findUserName = (userId) => {
       const user = users.value.find((user) => user.id === userId);
-      return user ? user.name : 'Unknown'; // in case user is not found
+      return user ? user.name : 'Unknown'; 
     };
 
     const openDialog = (article) => {
@@ -124,35 +116,26 @@ export default {
       dialog.value = true;
     };
 
-    const onLoad = (index, done) => {
-      currentPage.value++;
-      api
-        .get(`articles?page=${currentPage.value}&limit=10`)
-        .then((response) => {
-          const newArticles = response.data.map((article) => ({
-            ...article,
-            expanded: false,
-          }));
-          articles.value = [...articles.value, ...newArticles];
-          done();
-        })
-        .catch((error) => {
-          console.error('Error loading more articles:', error);
-          done();
-        });
+    const onLoad = () => {
+      const start = readArticles.value.length;
+      const end = start + 10;
+      readArticles.value = [...readArticles.value, ...articles.value.slice(start, end)];
     };
 
     return {
       articles,
+      readArticles,
       toggleLike,
-      findUserName,
       onLoad,
       dialog,
+      findUserName,
       selectedArticle,
       openDialog,
+      likes,
     };
   },
 };
+
 </script>
 
 <style scoped>

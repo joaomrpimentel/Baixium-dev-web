@@ -7,7 +7,7 @@ export default function usersService() {
     try {
       const { list } = useApi(`users/${id}/articles`);
       
-      const  data  = list();
+      const  data  = await list();
       console.log(data)
       return data;
     } catch (error) {
