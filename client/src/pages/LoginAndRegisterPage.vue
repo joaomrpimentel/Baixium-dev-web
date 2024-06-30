@@ -46,7 +46,7 @@
                   </q-form>
                 </q-card-section>
                 <q-card-actions class="q-px-lg">
-                  <q-btn style="border-radius: 8px;" color="dark" @click="submit" rounded size="md" :label="btnLabel" no-caps class="full-width" />
+                  <q-btn style="border-radius: 8px;" color="dark" @click="submit" rounded size="md" :label="btnLabel" no-caps />
                   <q-card-section v-if="register" class="text-center q-pt-none">
                     <div class="text-grey-8"> By creating an account, you agree to our
                       <a href=" " class="text-dark text-weight-bold" style="text-decoration: none">Terms and Conditions</a></div>
@@ -68,6 +68,7 @@ import MainHeader from 'src/components/MainHeader.vue';
 import MainFooter from 'src/components/MainFooter.vue';
 import { auth } from '../store/auth'
 import { defineComponent } from 'vue';
+import  loginService from '../services/login';
 
 
 export default defineComponent({
@@ -123,6 +124,7 @@ export default defineComponent({
       // Escolhe aleatoriamente um dos títulos do array titles
       return this.titlesRegister[Math.floor(Math.random() * this.titlesRegister.length)];
     }
+    
   },
   methods: {
     checkRegisterParam() {
@@ -145,7 +147,7 @@ export default defineComponent({
        const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/
        return (emailPattern.test(val) || 'Enter a valid email')
      },
-    submit () {
+    async submit () {
       if (this.register){
         this.$refs.email.validate()
         this.$refs.username.validate()
@@ -158,15 +160,33 @@ export default defineComponent({
       if (!this.register) 
         if (!this.$refs.email.hasError && (!this.$refs.password.hasError))
      {
-      this.$q.notify({
-        icon: 'done',
-        color: 'positive',
-        message: 'Logged in'
-        })
-        auth.isLoggedIn = true;
-        this.navigateTo('feed-articles');
-     }
-     },
+
+      
+      try {
+        const { post } = loginService();
+        // Chama a função post do serviço de login e verifica se o login funcionou
+        const data = await post({email: this.email, password: this.password});
+        if (data) {
+          this.$q.notify({
+            icon: 'done',
+            color: 'positive',
+            message: 'Logged in'
+          })
+          auth.isLoggedIn = true;
+          auth.user = data;
+          console.log(auth.user)
+          this.$router.push({ name: 'feed-articles' })
+        } 
+      } catch (error) {
+        this.$q.notify({
+            icon: 'error',
+            color: 'negative',
+            message: 'Login failed'
+          })
+        console.error(error);
+      }
+     
+     }},
     switchTypeForm(){ 
       this.register = !this.register
       this.title = this.register ? 'Sign up' : 'Log in'

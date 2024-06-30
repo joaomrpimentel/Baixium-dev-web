@@ -3,7 +3,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Georgia:wght@700&family=Arial:wght@400&display=swap" rel="stylesheet">
   </main-header>
   <q-body style="height: 100%; margin: 0; overflow: hidden;">
-    <div style="display: flex; justify-content: space-between; align-items: center; height: 80vh; color: black; padding: 0 20rem; position: relative;">
+    <div style="display: flex; justify-content: space-between; align-items: center; height: 80vh; padding: 0 20rem; position: relative;">
       <div class="box" style="max-width: 60%; text-align: left; z-index: 2; padding: 1rem; border-radius: 0.5rem;">
         <h1 style="font-family: 'Georgia', serif; font-weight: 700; font-size: 4rem; margin: 0;">Welcome to Baixium</h1>
         <p style="font-family: 'Arial', sans-serif; font-weight: 400; font-size: 1.5rem; margin: 1rem 0;">Share and explore knowledge with other students.</p>
