@@ -30,6 +30,7 @@ import MainFooter from 'src/components/MainFooter.vue';
 import postsService from 'src/services/posts';
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
+import { auth } from '../store/auth';
 
 export default {
     components: {
@@ -44,9 +45,9 @@ export default {
     setup() {
         const { post } = postsService();
 
-        const createArticle = async (title, content) => {
+        const createArticle = async (title, content, id) => {
             try {
-                const data = await post({title: title, content: content});
+                const data = await post({title: title, content: content, userId: id});
                 return data;
             } catch (error) {
                 console.error(error);
@@ -56,8 +57,10 @@ export default {
         const $q = useQuasar();
         const title = ref('');
         const article_content = ref('');
+        const user = ref(auth.user);
+        const userId = ref(user.value?.id || '');
         const submit = () => {
-            createArticle(title.value, article_content.value);
+            createArticle(title.value, article_content.value, userId.value);
             $q.notify({
                 color: 'green-4',
                 textColor: 'white',
