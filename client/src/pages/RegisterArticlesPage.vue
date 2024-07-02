@@ -43,12 +43,11 @@ export default {
         }
     },
     setup() {
-        const user = ref(auth.user);
         const { post } = postsService();
 
-        const createArticle = async (title, content, user) => {
+        const createArticle = async (title, content, id) => {
             try {
-                const data = await post({title: title, content: content, userid: user.id});
+                const data = await post({title: title, content: content, userId: id});
                 return data;
             } catch (error) {
                 console.error(error);
@@ -58,8 +57,10 @@ export default {
         const $q = useQuasar();
         const title = ref('');
         const article_content = ref('');
+        const user = ref(auth.user);
+        const userId = ref(user.value?.id || '');
         const submit = () => {
-            createArticle(title.value, article_content.value, user.value.id);
+            createArticle(title.value, article_content.value, userId.value);
             $q.notify({
                 color: 'green-4',
                 textColor: 'white',
@@ -79,4 +80,3 @@ export default {
 
     
 </script>
-
