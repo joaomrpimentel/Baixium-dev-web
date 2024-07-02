@@ -29,14 +29,22 @@ export default function useApi(url : string) {
             throw new Error('erro')
         }
     }
+
     
+    const put = async (form: number) => {
+        try {
+            const { data } = await api.put(url, form)
+            return data
+        } catch (error) {
+            throw new Error('erro')
+        }
+    }
  
-
-
 
     return{
         list,
         post,
-        remove
+        remove,
+        put
     }
 }
