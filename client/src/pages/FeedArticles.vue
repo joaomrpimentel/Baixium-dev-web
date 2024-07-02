@@ -3,12 +3,11 @@
   <div class="q-pa-md items-start q-gutter-md" style="margin: 0px 20%">
     <q-infinite-scroll @load="onLoad" :offset="250">
       <q-card
-        v-for="article in articles"
+        v-for="article in readArticles"
         :key="article.id"
-        @click="openDialog(article)"
         class="clickable-card q-mb-md"
       >
-        <q-card-section>
+        <q-card-section @click="openDialog(article)">
           <div class="grey">{{ findUserName(article.userId) }}</div>
           <div class="text-h5 q-mt-sm q-mb-xs">{{ article.title }}</div>
           <div class="text-caption text-grey">
@@ -17,9 +16,24 @@
           <div class="text-caption text-grey">{{ article.tags }}</div>
           <div class="text-red text-weight-bold">
             <q-icon name="favorite" size="1.3rem" />
-            {{ article.likes || 0 }} LIKES
+            {{ likes[article.id] || 0 }} LIKES
           </div>
         </q-card-section>
+
+        <q-card-actions align="right" class="more-button">
+          <q-btn flat round dense icon="more_horiz" @click="toggleMenu(article.id)"/>
+          <q-menu v-model="menus[article.id]">
+            <q-list>
+              <q-item clickable v-close-popup @click="openEditDialog(article)">
+                <q-item-section>Edit</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="openDeleteDialog(article)">
+                <q-item-section>Delete</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-card-actions>
+        
       </q-card>
       <template v-slot:loading>
         <div class="row justify-center q-my-md">
@@ -30,15 +44,9 @@
   </div>
 
   <q-dialog v-model="dialog">
-    <q-card class="q-pa-md">
+    <q-card class="q-pa-md" style="width: 75%;">
       <q-card-actions align="right">
-        <q-btn
-          flat
-          round
-          icon="close"
-          @click="dialog = false"
-          class="close-button"
-        />
+        <q-btn flat round icon="close" @click="dialog = false" class="close-button" />
       </q-card-actions>
 
       <q-card-section>
@@ -57,14 +65,44 @@
       </q-card-section>
 
       <q-card-actions>
-        <q-btn
-          flat
-          color="red"
-          icon="favorite"
-          @click="toggleLike(selectedArticle.id)"
-        >
-          {{ selectedArticle.likes || 0 }} Likes
+        <q-btn flat color="red" icon="favorite" @click="toggleLike(selectedArticle.id)">
+          {{ likes[selectedArticle.id] || 0 }} Likes
         </q-btn>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog v-model="editDialog">
+    <q-card class="q-pa-md" style="width: 75%;">
+      <q-card-section>
+        <div class="text-h6">Edit Article</div>
+      </q-card-section>
+
+      <q-card-section>
+        <q-input v-model="selectedArticle.title" label="Title" />
+        <q-input v-model="selectedArticle.content" label="Content" type="textarea" />
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat label="Save" @click="saveArticle" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog v-model="deleteDialog">
+    <q-card class="q-pa-md">
+      <q-card-section>
+        <div class="text-h6">Confirm Deletion</div>
+      </q-card-section>
+
+      <q-card-section>
+        Are you sure you want to delete this article?
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat label="Delete" color="red" @click="confirmDeleteArticle" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -76,7 +114,8 @@
 import MainHeader from 'src/components/MainHeader.vue';
 import MainFooter from 'src/components/MainFooter.vue';
 import { onMounted, ref } from 'vue';
-import { api } from 'src/boot/axios';
+import postsService from '../services/posts';
+import usersService from '../services/users';
 
 export default {
   components: {
@@ -86,37 +125,49 @@ export default {
 
   setup() {
     const articles = ref([]);
+    const readArticles = ref([]);
     const likes = ref({});
     const users = ref([]);
-    const currentPage = ref(0);
     const dialog = ref(false);
+    const editDialog = ref(false);
+    const deleteDialog = ref(false);
     const selectedArticle = ref({});
+    const menus = ref({});
 
     onMounted(async () => {
       try {
-        const articlesResponse = await api.get(
-          `Article?page=${currentPage.value}&limit=10`
-        );
-        const usersResponse = await api.get('users');
+        const postsResponse = await postsService().list();
+        const usersResponse = await usersService().list();
 
-        articles.value = articlesResponse.data.map((article) => ({
-          ...article,
-          expanded: false,
-        }));
-        users.value = usersResponse.data;
+        users.value = usersResponse;
+        articles.value = postsResponse;
+
+        console.log('Users:', users.value);
+        console.log('Articles:', articles.value);
+
+        onLoad();
       } catch (error) {
-        console.error(error);
+        console.error('Error fetching data:', error);
       }
     });
 
     const toggleLike = (id) => {
-      likes.value[id] = (likes.value[id] || 0) + 1;
-      // send this like to the server
+      if (!likes.value[id]) {
+        likes.value[id] = 1;
+        const likeResponse = postsService().sendLike(id);
+        console.log(likeResponse)
+      } else {
+        console.warn('User already liked this article.');
+      }
     };
 
     const findUserName = (userId) => {
+      if (!users.value) {
+        console.warn('Users data is not loaded yet.');
+        return 'Unknown';
+      }
       const user = users.value.find((user) => user.id === userId);
-      return user ? user.name : 'Unknown'; // in case user is not found
+      return user ? user.name : 'Unknown';
     };
 
     const openDialog = (article) => {
@@ -124,32 +175,75 @@ export default {
       dialog.value = true;
     };
 
-    const onLoad = (index, done) => {
-      currentPage.value++;
-      api
-        .get(`articles?page=${currentPage.value}&limit=10`)
-        .then((response) => {
-          const newArticles = response.data.map((article) => ({
-            ...article,
-            expanded: false,
-          }));
-          articles.value = [...articles.value, ...newArticles];
-          done();
-        })
-        .catch((error) => {
-          console.error('Error loading more articles:', error);
-          done();
-        });
+    const openEditDialog = (article) => {
+      selectedArticle.value = { ...article };
+      editDialog.value = true;
+    };
+
+    const openDeleteDialog = (article) => {
+      selectedArticle.value = article;
+      deleteDialog.value = true;
+    };
+
+    const saveArticle = async () => {
+      try {
+        console.log(`Save article with id: ${selectedArticle.value.id}`);
+        await postsService().edit(selectedArticle.value.id, selectedArticle.value);
+        
+        const index = articles.value.findIndex(article => article.id === selectedArticle.value.id);
+        if (index !== -1) {
+          articles.value[index] = { ...selectedArticle.value };
+        }
+        
+        readArticles.value = articles.value.slice(0, readArticles.value.length);
+      } catch (error) {
+        console.error('Error updating article:', error);
+      }
+    };
+
+    const confirmDeleteArticle = async () => {
+      try {
+        console.log(`Delete article with id: ${selectedArticle.value.id}`);
+        await postsService().remove(selectedArticle.value.id);
+        
+        articles.value = articles.value.filter(article => article.id !== selectedArticle.value.id);
+        readArticles.value = articles.value.slice(0, readArticles.value.length);
+      } catch (error) {
+        console.error('Error deleting article:', error);
+      }
+    };
+
+    const toggleMenu = (id) => {
+      menus.value[id] = !menus.value[id];
+    };
+
+    const onLoad = () => {
+      const start = readArticles.value.length;
+      const end = start + 10;
+      readArticles.value = [
+        ...readArticles.value,
+        ...articles.value.slice(start, end),
+      ];
     };
 
     return {
       articles,
+      readArticles,
       toggleLike,
-      findUserName,
       onLoad,
       dialog,
+      editDialog,
+      deleteDialog,
+      findUserName,
       selectedArticle,
       openDialog,
+      openEditDialog,
+      openDeleteDialog,
+      saveArticle,
+      confirmDeleteArticle,
+      likes,
+      menus,
+      toggleMenu,
     };
   },
 };
@@ -161,6 +255,12 @@ export default {
 }
 
 .close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.more-button {
   position: absolute;
   top: 10px;
   right: 10px;
