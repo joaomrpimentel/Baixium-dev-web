@@ -92,7 +92,7 @@
       </q-card-actions>
 
       <q-card-section>
-        <div class="grey">{{ findUserName(selectedArticle.userId) }}</div>
+        <div class="grey">{{ user?.name }}</div>
         <div class="text-h5 q-mt-sm q-mb-xs">{{ selectedArticle.title }}</div>
         <div class="text-caption text-grey">
           {{ new Date(selectedArticle.createdAt).toLocaleDateString() }}
@@ -215,11 +215,6 @@ export default defineComponent({
       }
     };
 
-    const findUserName = (userId: string) => {
-      // Replace with your logic to find user's name
-      return 'User Name';
-    };
-
     const openDialog = (article: Article) => {
       selectedArticle.value = article;
       dialog.value = true;
@@ -295,7 +290,6 @@ export default defineComponent({
       deleteDialog,
       menus,
       toggleLike,
-      findUserName,
       openDialog,
       openEditDialog,
       openDeleteDialog,
