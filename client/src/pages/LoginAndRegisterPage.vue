@@ -157,7 +157,8 @@ export default defineComponent({
           const data = await post({
             email: this.email,
             password: this.password,
-            name: this.register ? this.username : undefined
+            name: this.register ? this.username : undefined,
+            avatarURL: "https://i.ibb.co/G2S34kJ/Captura-de-tela-2024-06-26-002307.png"
           });
 
           if (data) {
