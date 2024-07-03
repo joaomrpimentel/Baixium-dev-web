@@ -67,18 +67,17 @@
   
       <!-- Edit Profile Dialog -->
       <q-dialog v-model="showEditProfile">
-        <q-card style="width:40%;">
+        <q-card style="width: 40%;">
           <q-card-section>
             <div class="text-h6">Edit Profile</div>
           </q-card-section>
           <q-card-section>
-            <q-input v-model="userName" label="Username" />
-            <q-input v-model="currentPassword" type="password" label="Current Password" />
-            <q-input v-model="newPassword" type="password" label="New Password" />
-            <q-input v-model="confirmNewPassword" type="password" label="Confirm New Password" />
+            <q-input v-model="tempUserName" label="Username" />
+            <q-input v-model="tempDescription" label="Description" type="textarea" />
+            <q-input v-model="tempAvatarURL" label="Avatar URL" type="url" />
           </q-card-section>
           <q-card-actions align="right">
-            <q-btn flat label="Cancel" color="black" v-close-popup />
+            <q-btn flat label="Cancel" color="black" v-close-popup @click="resetTempValues" />
             <q-btn flat label="Save" color="black" @click="saveProfile" />
           </q-card-actions>
         </q-card>
@@ -159,6 +158,7 @@ import MainFooter from 'src/components/MainFooter.vue';
 import { auth } from '../store/auth';
 import postsService from '../services/posts';
 
+
 interface Article {
   id: string;
   title: string;
@@ -167,20 +167,22 @@ interface Article {
   tags: string[];
 }
 
-interface User {
-  id: string;
-  name: string;
-  avatarURL: string;
-  description: string;
-}
-
 export default defineComponent({
   components: {
     MainHeader,
     MainFooter
   },
   setup() {
-    const user = ref(auth.user);
+    const user = ref(auth.user || {
+      id: '',
+      name: '',
+      avatarURL: '',
+      description: '',
+      email: ''
+    });
+    const tempUserName = ref(user.value.name);
+    const tempDescription = ref(user.value.description);
+    const tempAvatarURL = ref(user.value.avatarURL);
     const showEditProfile = ref(false);
     const userName = ref(user.value?.name || '');
     const currentPassword = ref('');
@@ -208,8 +210,6 @@ export default defineComponent({
     const toggleLike = (id: string) => {
       if (!likes.value[id]) {
         likes.value[id] = 1;
-        const likeResponse = postsService().sendLike(id);
-        console.log(likeResponse);
       } else {
         console.warn('User already liked this article.');
       }
@@ -267,11 +267,17 @@ export default defineComponent({
     };
 
     const saveProfile = () => {
-      console.log('Username:', userName.value);
-      console.log('Current Password:', currentPassword.value);
-      console.log('New Password:', newPassword.value);
-      console.log('Confirm New Password:', confirmNewPassword.value);
+      user.value.name = tempUserName.value;
+      user.value.description = tempDescription.value;
+      user.value.avatarURL = tempAvatarURL.value;
       showEditProfile.value = false;
+    };
+    
+
+    const resetTempValues = () => {
+      tempUserName.value = user.value.name;
+      tempDescription.value = user.value.description;
+      tempAvatarURL.value = user.value.avatarURL;
     };
 
     return {
@@ -280,6 +286,9 @@ export default defineComponent({
       userName,
       currentPassword,
       newPassword,
+      tempUserName,
+      tempDescription,
+      tempAvatarURL,
       confirmNewPassword,
       articles,
       readArticles,
@@ -296,6 +305,7 @@ export default defineComponent({
       saveArticle,
       confirmDeleteArticle,
       onLoad,
+      resetTempValues,
       toggleMenu,
       saveProfile
     };

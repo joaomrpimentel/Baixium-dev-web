@@ -3,17 +3,7 @@ import useApi from '../composables/UseApi';
 export default function postsService (){
     const{ list , post, remove } = useApi('articles');
 
-    const sendLike = async (id: string | null) => {
-        try {
-          const { put } = useApi(`articles/${id}/like`);
-          
-          const  data  = await put();
-          console.log(data)
-          return data;
-        } catch (error) {
-          throw new Error('Error');
-        }
-      }
+
 
     const edit = async (id: string | null, form: any) => {
         try {
@@ -43,7 +33,6 @@ export default function postsService (){
         list,
         post,
         remove,
-        sendLike,
         edit,
         listOnlyUsers
     }

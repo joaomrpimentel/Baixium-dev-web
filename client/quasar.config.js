@@ -54,8 +54,8 @@ module.exports = configure(function (ctx) {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       env : {
         API_URL: ctx.dev 
-        ? 'http://54.221.178.21:8080'
-        : 'http://54.221.178.21:8080'
+        ? 'https://localhost:7069'
+        : 'https://localhost:7069'
       },
       // vueRouterBase,
       // vueDevtools,
@@ -102,7 +102,12 @@ module.exports = configure(function (ctx) {
     devServer: {
       // https: true
       port: 8080,
-      open: true // opens browser window automatically
+      open: true, // opens browser window automatically
+      clientLogLevel: 'none',
+      overlay: {
+        warnings: false,
+        errors: false
+      }
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework

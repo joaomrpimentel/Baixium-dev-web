@@ -21,7 +21,7 @@ export default function useApi(url : string) {
     }
 
 
-    const remove = async (id : number) => {
+    const remove = async (id : any) => {
         try {
             const { data } = await api.delete(`${url}/${id}`)
             return data
